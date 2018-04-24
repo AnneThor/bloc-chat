@@ -5,7 +5,8 @@ class RoomList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      rooms: []
+      rooms: [],
+      newRoom: ''
     };
     this.roomsRef = this.props.firebase.database().ref('rooms');
   }
@@ -18,13 +19,39 @@ class RoomList extends Component {
     });
   }
 
+  handleNewChatName = (event) => {
+    this.setState(
+      { newRoom: event.target.value }
+    );
+  }
+
+  handleAddNewRoom = (event) => {
+    this.setState(
+      this.roomsRef.push(
+        { name: this.state.newRoom }
+      )
+    )
+  }
+
   render () {
     return (
       <div className="sidebar">
         <h2>Bloc Chat</h2>
         <ul className="room-list">
-          { this.state.rooms.map( (room, index) => <li key={index}>Room {room.key}</li> ) }
+          { this.state.rooms.map( (room, index) => <li key={index}>{room.name}</li> ) }
         </ul>
+        <form className="create-room">
+          Create a new chat room:
+          <input
+            type="text"
+            value={this.state.newRoom}
+            onChange= {this.handleNewChatName} />
+          <input
+            type="submit"
+            value="Add New Room"
+            onClick = { this.handleAddNewRoom } />
+
+        </form>
       </div>
     );
   }

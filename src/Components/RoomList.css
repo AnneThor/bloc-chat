@@ -2,6 +2,19 @@ h2 {
   text-align: left;
 }
 
+input {
+  float: left;
+}
+
+.create-room {
+  text-align: left;
+}
+
+.create-room input {
+  width: 80%;
+  margin: 2%;
+}
+
 .room-list {
   list-style-type: none;
   padding-left: 0;
