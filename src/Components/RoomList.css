@@ -1,0 +1,22 @@
+h2 {
+  text-align: left;
+}
+
+.room-list {
+  list-style-type: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.room-list li {
+  padding-bottom: 10px;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: grey;
+  height: 100vh;
+  padding-top: 10%;
+  padding-left: 10%;
+  margin: 0;
+}
