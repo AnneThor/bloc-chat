@@ -26,6 +26,7 @@ class RoomList extends Component {
   }
 
   handleAddNewRoom = (event) => {
+    event.preventDefault();
     this.setState(
       this.roomsRef.push(
         { name: this.state.newRoom }
@@ -45,6 +46,7 @@ class RoomList extends Component {
           <input
             type="text"
             value={this.state.newRoom}
+            placeholder="Enter New Room Name"
             onChange= {this.handleNewChatName} />
           <input
             type="submit"
