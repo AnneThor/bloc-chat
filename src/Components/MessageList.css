@@ -1,0 +1,29 @@
+.message-list {
+  grid-area: main;
+  background-color: lightblue;
+  height: 100vh;
+  padding-top: 5%;
+  padding-left: 5%;
+  margin: 0;
+}
+
+h1 {
+  text-align: left;
+}
+
+.message {
+  text-align: left;
+}
+
+.timestamp {
+  text-align: right;
+}
+
+.username {
+  font-weight: bold;
+  text-align: left;
+}
+
+#message-list:nth-child(odd) {
+  background-color: #ccc;
+}

@@ -39,7 +39,11 @@ class RoomList extends Component {
       <div className="sidebar">
         <h2>Bloc Chat</h2>
         <ul className="room-list">
-          { this.state.rooms.map( (room, index) => <li key={index}>{room.name}</li> ) }
+          { this.state.rooms.map(
+            (room, index) =>
+            <li
+              key={index}
+              onClick={(e) => this.props.roomSelect(e, room)} >{room.name}</li> ) }
         </ul>
         <form className="create-room">
           Create a new chat room:
