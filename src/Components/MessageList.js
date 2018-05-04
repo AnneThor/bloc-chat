@@ -7,7 +7,7 @@ class MessageList extends Component {
     this.state = {
       messages: []
     };
-    this.messageList = this.props.firebase.database().ref('messages').orderByChild('sentAt');
+    this.messageList= this.props.firebase.database().ref('messages').orderByChild('sentAt');
   }
 
   componentDidMount() {

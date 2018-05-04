@@ -37,7 +37,7 @@ class RoomList extends Component {
   render () {
     return (
       <div className="sidebar">
-        <h2>Bloc Chat</h2>
+        <h2>Available Chat Rooms</h2>
         <ul className="room-list">
           { this.state.rooms.map(
             (room, index) =>
