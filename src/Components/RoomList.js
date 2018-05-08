@@ -56,7 +56,6 @@ class RoomList extends Component {
             type="submit"
             value="Add New Room"
             onClick = { this.handleAddNewRoom } />
-
         </form>
       </div>
     );

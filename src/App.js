@@ -57,7 +57,7 @@ class App extends Component {
           activeRoom={this.state.activeRoom}
           roomSelect={this.handleRoomChange}/>
       { activeRoom ? ( <MessageList firebase={firebase}
-        activeRoom={this.state.activeRoom} />) : (null) }
+        activeRoom={this.state.activeRoom} activeUser={this.state.activeUser}/>) : (null) }
       </div>
     );
   }
