@@ -23,7 +23,6 @@ class MessageList extends Component {
     this.setState(
       { newMessage: event.target.value }
     );
-    console.log(this.state.newMessage);
   }
 
   handleSendMessage = (event) => {
@@ -32,15 +31,19 @@ class MessageList extends Component {
       this.messageList.push(
         { content: this.state.newMessage,
           roomId: this.props.activeRoom.key,
-          sentAt: this.convertTime(this.props.firebase.database.ServerValue.TIMESTAMP),
-          username: this.props.activeUser.displayName
-        }
-      ))
+          sentAt: this.props.firebase.database.ServerValue.TIMESTAMP,
+          username: this.props.activeUser ? this.props.activeUser.displayName : "Anonymous"
+        })
+      );
+    this.setState(
+      {newMessage: ''}
+    )
   }
 
   convertTime = (timestamp) => {
-    const formatDate = new Date(timestamp);
-    return formatDate.toDateString();
+    console.log(timestamp);
+    const thisDate = new Date(timestamp);
+    return thisDate.toLocaleString();
   }
 
   render() {
@@ -54,14 +57,14 @@ class MessageList extends Component {
         {roomMessages.map(
           (message, index) =>
             <li key={index} className="message-list-items">
-              <p className="timestamp"> {message.sentAt}</p>
+              <p className="timestamp">{this.convertTime(message.sentAt)}</p>
               <p className="username">{message.username}</p>
               <p className="message">{message.content}</p>
             </li>
         )}
         </ul>
 
-        <form className="message-create">
+        <form className="message-create" onSubmit = { this.handleSendMessage }>
           <input
             className="message-input-field"
             type="text"
@@ -71,8 +74,7 @@ class MessageList extends Component {
           <input
             className="message-send-button"
             type="submit"
-            value="Send"
-            onClick = { this.handleSendMessage } />
+            value="Send" />
         </form>
 
       </div>
