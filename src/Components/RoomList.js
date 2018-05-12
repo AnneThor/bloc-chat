@@ -6,7 +6,7 @@ class RoomList extends Component {
     super(props);
     this.state = {
       rooms: [],
-      newRoom: ''
+      newRoom: '',
     };
     this.roomsRef = this.props.firebase.database().ref('rooms');
   }
@@ -17,12 +17,14 @@ class RoomList extends Component {
       room.key = snapshot.key;
       this.setState( {rooms: this.state.rooms.concat( room )} );
     });
-  }
 
-  handleNewChatName = (event) => {
-    this.setState(
-      { newRoom: event.target.value }
-    );
+    this.roomsRef.on('child_removed', snapshot => {
+      const room = snapshot.val();
+      room.key = snapshot.key;
+      this.state.rooms.splice(room.key,1);
+      const newRoomsArray = this.state.rooms;
+      this.setState = ({ rooms: newRoomsArray });
+    })
   }
 
   handleAddNewRoom = (event) => {
@@ -31,7 +33,21 @@ class RoomList extends Component {
       this.roomsRef.push(
         { name: this.state.newRoom }
       )
+    );
+    this.setState(
+      { newRoom: ''}
     )
+  }
+
+  handleDeleteRoom = (e) => {
+    e.preventDefault();
+    this.roomsRef.child(e.target.value).remove();
+  }
+
+  handleNewChatName = (event) => {
+    this.setState(
+      { newRoom: event.target.value }
+    );
   }
 
   render () {
@@ -43,7 +59,12 @@ class RoomList extends Component {
             (room, index) =>
             <li
               key={index}
-              onClick={(e) => this.props.roomSelect(e, room)} >{room.name}</li> ) }
+              onClick={(e) => this.props.roomSelect(e, room)} >{room.name}
+              <button
+                className="delete-room"
+                value={room.key}
+                onClick={this.handleDeleteRoom}>Delete {room.name} </button>
+            </li> ) }
         </ul>
         <form className="create-room">
           Create a new chat room:

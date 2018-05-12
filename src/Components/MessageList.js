@@ -41,7 +41,6 @@ class MessageList extends Component {
   }
 
   convertTime = (timestamp) => {
-    console.log(timestamp);
     const thisDate = new Date(timestamp);
     return thisDate.toLocaleString();
   }
@@ -52,7 +51,10 @@ class MessageList extends Component {
 
     return(
       <div className="message-list">
-        <h2 className="active-room-name">{this.props.activeRoom.name}</h2>
+        <h2 className="active-room-name">
+          {this.props.activeRoom.name}
+        </h2>
+
         <ul>
         {roomMessages.map(
           (message, index) =>
