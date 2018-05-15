@@ -31,14 +31,12 @@ class App extends Component {
       activeRoom: room
     });
 
-    console.log(this.state.activeRoom);
   }
 
   setUser = (user) => {
     this.setState(
       { activeUser: user }
     );
-    console.log("new user is" + {user});
   }
 
 
@@ -50,7 +48,7 @@ class App extends Component {
       <User
         firebase={firebase}
         setUser={this.setUser}
-        activeUser={this.state.activeUser}/>
+        activeUser={this.state.activeUser} />
 
         <RoomList
           firebase={firebase}

@@ -6,7 +6,7 @@ class RoomList extends Component {
     super(props);
     this.state = {
       rooms: [],
-      newRoom: '',
+      newRoom: ''
     };
     this.roomsRef = this.props.firebase.database().ref('rooms');
   }
@@ -18,13 +18,6 @@ class RoomList extends Component {
       this.setState( {rooms: this.state.rooms.concat( room )} );
     });
 
-    this.roomsRef.on('child_removed', snapshot => {
-      const room = snapshot.val();
-      room.key = snapshot.key;
-      this.state.rooms.splice(room.key,1);
-      const newRoomsArray = this.state.rooms;
-      this.setState = ({ rooms: newRoomsArray });
-    })
   }
 
   handleAddNewRoom = (event) => {
@@ -39,9 +32,14 @@ class RoomList extends Component {
     )
   }
 
-  handleDeleteRoom = (e) => {
-    e.preventDefault();
-    this.roomsRef.child(e.target.value).remove();
+  handleDeleteRoom = (e, room) => {
+    var array = [...this.state.rooms];
+    var index = array.indexOf(room);
+    array.splice(index, 1);
+    this.setState( { rooms: array });
+    this.setState(
+      this.roomsRef.child(e.target.value).remove()
+    );
   }
 
   handleNewChatName = (event) => {
@@ -51,6 +49,7 @@ class RoomList extends Component {
   }
 
   render () {
+
     return (
       <div className="sidebar">
         <h2>Available Chat Rooms</h2>
@@ -59,12 +58,16 @@ class RoomList extends Component {
             (room, index) =>
             <li
               key={index}
-              onClick={(e) => this.props.roomSelect(e, room)} >{room.name}
-              <button
+              onClick={(e) => this.props.roomSelect(e, room)}>{room.name}
+
+            <button
                 className="delete-room"
                 value={room.key}
-                onClick={this.handleDeleteRoom}>Delete {room.name} </button>
-            </li> ) }
+                onClick={(e) => this.handleDeleteRoom(e, room) }>
+                Delete {room.name} </button>
+            </li>
+
+           ) }
         </ul>
         <form className="create-room">
           Create a new chat room:
