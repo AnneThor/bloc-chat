@@ -20,6 +20,11 @@ input {
   margin-right: 4%;
 }
 
+.edit-roomname {
+  float: left;
+  width: 30%;
+}
+
 .room-list {
   list-style-type: none;
   padding-left: 0;
@@ -27,6 +32,7 @@ input {
 }
 
 .room-list li {
+  margin: 3px;
   padding-bottom: 10px;
 }
 

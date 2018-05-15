@@ -6,7 +6,9 @@ class RoomList extends Component {
     super(props);
     this.state = {
       rooms: [],
-      newRoom: ''
+      newRoom: '',
+      editRoom: false,
+      updatedRoomName: ''
     };
     this.roomsRef = this.props.firebase.database().ref('rooms');
   }
@@ -42,13 +44,55 @@ class RoomList extends Component {
     );
   }
 
+  handleEditRoom = (e, room) => {
+    this.setState( {editRoom: true} );
+  }
+
+  handleEditRoomSubmit = (e) => {
+    console.log("Submit method was called");
+    const updatedRooms = [...this.state.rooms];
+    const index = updatedRooms.indexOf(e.target.value);
+    updatedRooms[index].name = this.state.updatedRoomName;
+    this.setState(
+        { rooms: updatedRooms }
+      )
+    }
+
+  handleUpdateRoom = (e) => {
+    this.setState(
+        { updatedRoomName: e.target.value }
+      );
+    }
+
+  handleSubmitNewRoomTitle = (e) => {
+    if (e.key === "Enter") {
+      const updatedRooms = [...this.state.rooms];
+      const index = updatedRooms.indexOf(this.props.activeRoom);
+      updatedRooms[index].name = this.state.updatedRoomName;
+      this.setState(
+          { rooms: updatedRooms,
+            updatedRoomName: '',
+            editRoom: false }
+      );
+    }}
+
   handleNewChatName = (event) => {
     this.setState(
       { newRoom: event.target.value }
     );
   }
 
+
   render () {
+
+    const editRoomField = (
+      <input
+        className="edit-roomname"
+        type="text"
+        onChange={this.handleUpdateRoom}
+        onKeyPress={this.handleSubmitNewRoomTitle}
+        onSubmit={ this.handleEditRoomSubmit} />
+    );
 
     return (
       <div className="sidebar">
@@ -58,7 +102,8 @@ class RoomList extends Component {
             (room, index) =>
             <li
               key={index}
-              onClick={(e) => this.props.roomSelect(e, room)}>{room.name}
+              onClick={(e) => this.props.roomSelect(e, room)}
+              onDoubleClick={(e) => this.handleEditRoom(e, room)}>{ (this.state.editRoom && room === this.props.activeRoom) ? editRoomField : room.name }
 
             <button
                 className="delete-room"
