@@ -23,14 +23,37 @@ class App extends Component {
       activeRoom: null,
       activeUser: null
     };
+    this.roomsRef = firebase.database().ref('rooms');
+  }
 
+  componentDidMount() {
+    this.roomsRef.on('child_removed', snapshot => {
+      const room = snapshot.val();
+      room.key = snapshot.key;
+      if (this.state.activeRoom !== null && room.key === this.state.activeRoom.key) {
+        this.setState( {activeRoom: null } );
+      }
+    });
+    // this.roomsRef.on('value', snapshot => {
+    //   const room = snapshot.val();
+    //   room.key = snapshot.key;
+    //   const roomName = room.name;
+    //   if (this.state.activeRoom.key === room.key ) {
+    //     this.setState( { activeRoom.name: room.name });
+    //   }
+    // });
   }
 
   handleRoomChange = (event, room) => {
     this.setState( {
       activeRoom: room
     });
+  }
 
+  handleDeleteRoom = (event) => {
+    this.setState({
+      activeRoom: null
+    });
   }
 
   setUser = (user) => {
@@ -43,19 +66,25 @@ class App extends Component {
   render() {
     const activeRoom = this.state.activeRoom;
 
+
     return (
-      <div className="App grid-container">
-      <User
-        firebase={firebase}
-        setUser={this.setUser}
-        activeUser={this.state.activeUser} />
+      <div className="grid-layout">
+        <User
+          firebase={firebase}
+          setUser={this.setUser}
+          activeUser={this.state.activeUser} />
 
         <RoomList
           firebase={firebase}
           activeRoom={this.state.activeRoom}
-          roomSelect={this.handleRoomChange}/>
-      { activeRoom ? ( <MessageList firebase={firebase}
-        activeRoom={this.state.activeRoom} activeUser={this.state.activeUser}/>) : (null) }
+          roomSelect={this.handleRoomChange}
+          deleteRoom={this.handleDeleteRoom}/>
+        { activeRoom ?
+          ( <MessageList
+              firebase={firebase}
+              activeRoom={this.state.activeRoom}
+              activeUser={this.state.activeUser}/>)
+              : (null) }
       </div>
     );
   }

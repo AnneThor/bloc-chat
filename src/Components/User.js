@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './User.css';
 
 class User extends Component {
 
@@ -26,7 +27,7 @@ class User extends Component {
     );
 
     const signOutButton = (
-      <button className="header-button" type="button" onClick={() => this.handleSignOut(this.props.firebase)} >
+      <button className="login-button" type="button" onClick={() => this.handleSignOut(this.props.firebase)} >
         Sign Out
       </button>
     );
@@ -34,10 +35,12 @@ class User extends Component {
     const activeButton = this.props.activeUser ? signOutButton: signInButton;
 
     return (
-      <div className="header">
-      <h1 className="header-title">BLOC CHAT</h1>
-      <p className="user-name">{this.props.activeUser ? "Logged in as: " + this.props.activeUser.displayName : "Guest: Logged Out"}</p>
-      {activeButton}
+      <div className="user">
+        <h1 className="title">BLOC CHAT</h1>
+        <div className="login">
+          <p className="user-name">{this.props.activeUser ? "Logged in as: " + this.props.activeUser.displayName : "Guest: Logged Out"}</p>
+          {activeButton}
+        </div>
       </div>
     );}
   }

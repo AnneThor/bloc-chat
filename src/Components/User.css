@@ -1,0 +1,23 @@
+.login {
+  float: right;
+  margin: 2rem 0;
+  padding-right: 4rem;
+}
+
+.login-button {
+  float: right;
+}
+
+.title {
+  float: left;
+  font-size: 4rem;
+  font-weight: bold;
+  margin: 2rem 0;
+  padding-left: 3rem;
+}
+
+.user-name {
+  font-size: 2rem;
+  font-weight: bold;
+  padding-bottom: 1rem;
+}

@@ -8,8 +8,9 @@ class RoomList extends Component {
       rooms: [],
       newRoom: '',
       editRoom: false,
+      roomBeingEdited: '',
       updatedRoomName: ''
-    };
+    }
     this.roomsRef = this.props.firebase.database().ref('rooms');
   }
 
@@ -19,44 +20,29 @@ class RoomList extends Component {
       room.key = snapshot.key;
       this.setState( {rooms: this.state.rooms.concat( room )} );
     });
-
   }
+
 
   handleAddNewRoom = (event) => {
     event.preventDefault();
-    this.setState(
-      this.roomsRef.push(
-        { name: this.state.newRoom }
-      )
-    );
-    this.setState(
-      { newRoom: ''}
-    )
+    this.roomsRef.push( {name: this.state.newRoom } );
+    this.setState( { newRoom: ''} );
   }
 
   handleDeleteRoom = (e, room) => {
-    var array = [...this.state.rooms];
-    var index = array.indexOf(room);
-    array.splice(index, 1);
-    this.setState( { rooms: array });
-    this.setState(
-      this.roomsRef.child(e.target.value).remove()
-    );
+    this.roomsRef.child(e.target.value).remove();
+    var roomArrayCopy = [...this.state.rooms];
+    var index = roomArrayCopy.indexOf(room);
+    roomArrayCopy.splice(index, 1);
+    this.setState( { rooms: roomArrayCopy });
   }
 
   handleEditRoom = (e, room) => {
-    this.setState( {editRoom: true} );
+    var roomKey = room.key;
+    this.setState( { editRoom: true,
+                     roomBeingEdited: roomKey }
+                   );
   }
-
-  handleEditRoomSubmit = (e) => {
-    console.log("Submit method was called");
-    const updatedRooms = [...this.state.rooms];
-    const index = updatedRooms.indexOf(e.target.value);
-    updatedRooms[index].name = this.state.updatedRoomName;
-    this.setState(
-        { rooms: updatedRooms }
-      )
-    }
 
   handleUpdateRoom = (e) => {
     this.setState(
@@ -66,6 +52,9 @@ class RoomList extends Component {
 
   handleSubmitNewRoomTitle = (e) => {
     if (e.key === "Enter") {
+      if (this.state.updatedRoomName === '') {
+        this.setState( {editRoom: false});
+      } else {
       const updatedRooms = [...this.state.rooms];
       const index = updatedRooms.indexOf(this.props.activeRoom);
       updatedRooms[index].name = this.state.updatedRoomName;
@@ -74,7 +63,10 @@ class RoomList extends Component {
             updatedRoomName: '',
             editRoom: false }
       );
-    }}
+      const editedRoomRef = this.roomsRef.child(this.state.roomBeingEdited);
+      editedRoomRef.update({name: this.state.updatedRoomName});
+    }
+  }}
 
   handleNewChatName = (event) => {
     this.setState(
@@ -86,42 +78,48 @@ class RoomList extends Component {
   render () {
 
     const editRoomField = (
-      <input
+      <input autoFocus
         className="edit-roomname"
         type="text"
         onChange={this.handleUpdateRoom}
-        onKeyPress={this.handleSubmitNewRoomTitle}
-        onSubmit={ this.handleEditRoomSubmit} />
+        onKeyPress={this.handleSubmitNewRoomTitle}/>
     );
 
     return (
-      <div className="sidebar">
+      <div className="roomlist">
         <h2>Available Chat Rooms</h2>
-        <ul className="room-list">
+        <ul className="available-rooms">
           { this.state.rooms.map(
             (room, index) =>
             <li
-              key={index}
-              onClick={(e) => this.props.roomSelect(e, room)}
-              onDoubleClick={(e) => this.handleEditRoom(e, room)}>{ (this.state.editRoom && room === this.props.activeRoom) ? editRoomField : room.name }
-
-            <button
-                className="delete-room"
+              className="available-room-item"
+              key={index}>
+              <section
+                className="available-room-name"
+                key={index}
+                onClick={(e) => this.props.roomSelect(e, room)}
+                onDoubleClick={(e) => this.handleEditRoom(e, room)}>
+                  { (this.state.editRoom && room === this.props.activeRoom) ? editRoomField : room.name }
+              </section>
+              <button
+                className="delete-room-button"
                 value={room.key}
-                onClick={(e) => this.handleDeleteRoom(e, room) }>
-                Delete {room.name} </button>
+                onClick={(e) => this.handleDeleteRoom(e, room)}>
+                Delete
+              </button>
             </li>
-
            ) }
         </ul>
         <form className="create-room">
           Create a new chat room:
           <input
+            className="enter-room-name"
             type="text"
             value={this.state.newRoom}
             placeholder="Enter New Room Name"
             onChange= {this.handleNewChatName} />
           <input
+            className="submit-room-name"
             type="submit"
             value="Add New Room"
             onClick = { this.handleAddNewRoom } />
@@ -129,7 +127,6 @@ class RoomList extends Component {
       </div>
     );
   }
-
 }
 
 export default RoomList;

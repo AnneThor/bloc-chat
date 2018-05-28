@@ -1,58 +1,50 @@
-.active-room-name {
-  text-align: left;
-  margin-left: 2%;
-}
-
-.message {
-  text-align: left;
-  padding-left: 2%;
+.available-message-list {
+  margin: 0 3rem;
+  margin-bottom: 3rem;
 }
 
 .message-create {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 3rem;
+}
 
+.message-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .message-input-field {
-  width: 80%;
-  margin-left: 5%;
-  margin: 0 2.5% 0 5%;
+  margin-bottom: 1rem;
+  width: 90%;
 }
-
-.message-list {
-  grid-area: main;
-  background-color: #C0C0C0;
-  height: 100%;
-  padding-top: 1% 2% 0 2%;
-}
-
 
 .message-list-items {
-  width: 96%;
-  border: 1px black dotted;
-  border-radius: 15px;
-  margin: 5px 0;
+  border: .2rem black dotted;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 1rem;
 }
 
 .message-list-items:nth-child(odd) {
   background-color: #778899;
 }
 
-.message-send-button {
-  padding: 2%;
-}
-
-.message-list-title {
-  grid-area: title;
-  min-height: 10%;
+.message-text {
+  font-size: 2rem;
+  padding: 1rem;
 }
 
 .timestamp {
-  float: right;
-  padding-right: 2%;
+  font-size: 1.5rem;
 }
 
 .username {
+  font-size: 1.5rem;
   font-weight: bold;
-  text-align: left;
-  padding-left: 2%;
+  padding: 1rem;
 }

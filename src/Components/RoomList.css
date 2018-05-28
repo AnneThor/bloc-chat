@@ -1,46 +1,43 @@
 h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 2rem 3rem;
   text-align: left;
 }
 
-input {
-  float: left;
+.available-rooms {
+  margin: 0 3rem;
+  margin-bottom: 3rem;
 }
 
-.create-room {
-  text-align: left;
+.available-room-item {
+  display: flex;
+  justify-content: space-between;
 }
 
-.create-room input {
-  width: 80%;
-  margin: 2%;
+.available-room-item > section {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: .5rem 0;
+  margin-bottom: 2rem;
+}
+.create-room{
+  display: flex;
+  flex-direction: column;
+  flew-flow: flex-end;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 3rem;
 }
 
-.delete-room {
-  float: right;
-  margin-right: 4%;
+.create-room > input {
+  margin-top: 1rem
 }
 
-.edit-roomname {
-  float: left;
-  width: 30%;
-}
-
-.room-list {
-  list-style-type: none;
-  padding-left: 0;
-  text-align: left;
-}
-
-.room-list li {
-  margin: 3px;
-  padding-bottom: 10px;
-}
-
-.sidebar {
-  grid-area: sidebar;
-  background-color: #A9A9A9;
-  height: 100vh;
-  padding-top: 2%;
-  padding-left: 5%;
-  margin: 0;
+.delete-room-button {
+  background-color: grey;
+  border-color: black;
+  border-radius: 1rem;
+  margin: .5rem 0;
+  text-align: center;
 }

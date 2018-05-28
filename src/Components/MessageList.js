@@ -6,17 +6,34 @@ class MessageList extends Component {
     super(props);
     this.state = {
       messages: [],
-      newMessage: ''
-    };
+      newMessage: '',
+      editMessage: false
+    }
     this.messageList = this.props.firebase.database().ref('messages');
+    this.roomsRef = this.props.firebase.database().ref('rooms');
   }
+
 
   componentDidMount() {
     this.messageList.on('child_added', snapshot => {
       const message = snapshot.val();
       message.key = snapshot.key;
       this.setState( {messages: this.state.messages.concat( message )} );
-    })
+    });
+  }
+
+  handleDeleteMessage(e, message) {
+      this.messageList.child(e.target.value).remove();
+      const messageArrayCopy = [...this.state.messages];
+      const indexToRemove = messageArrayCopy.indexOf(message);
+      messageArrayCopy.splice(indexToRemove, 1);
+      this.setState( { messages: messageArrayCopy} );
+  }
+
+  handleEditMessageClick(e) {
+    this.setState(
+      { editMessage: true }
+    );
   }
 
   handleNewMessage= (event) => {
@@ -27,17 +44,19 @@ class MessageList extends Component {
 
   handleSendMessage = (event) => {
     event.preventDefault();
-    this.setState(
       this.messageList.push(
         { content: this.state.newMessage,
           roomId: this.props.activeRoom.key,
           sentAt: this.props.firebase.database.ServerValue.TIMESTAMP,
           username: this.props.activeUser ? this.props.activeUser.displayName : "Anonymous"
-        })
-      );
+        });
     this.setState(
       {newMessage: ''}
     )
+  }
+
+  handleUpdateMessage (e) {
+    this.setState( {newMessage: e.target.value});
   }
 
   convertTime = (timestamp) => {
@@ -46,22 +65,37 @@ class MessageList extends Component {
   }
 
   render() {
+
     const roomMessages = this.state.messages.filter( message => message.roomId === this.props.activeRoom.key);
     roomMessages.sort(function (a,b) {return a.sentAt - b.sentAt} );
 
+
+
+
     return(
-      <div className="message-list">
+      <div className="messagelist">
         <h2 className="active-room-name">
           {this.props.activeRoom.name}
         </h2>
 
-        <ul>
+        <ul className="available-message-list">
         {roomMessages.map(
           (message, index) =>
             <li key={index} className="message-list-items">
-              <p className="timestamp">{this.convertTime(message.sentAt)}</p>
-              <p className="username">{message.username}</p>
-              <p className="message">{message.content}</p>
+              <div className="message-content">
+                <p className="message-text">{message.content}</p>
+                <p className="username">{message.username}</p>
+              </div>
+              <div className="message-details">
+                <p className="timestamp">{this.convertTime(message.sentAt)}</p>
+                <button
+                  onClick={(e) => this.handleEditMessageClick(e)}>Edit
+                </button>
+                  <button
+                  value={message.key}
+                  onClick={(e) => this.handleDeleteMessage(e, message)}>Delete
+                </button>
+              </div>
             </li>
         )}
         </ul>
@@ -76,7 +110,7 @@ class MessageList extends Component {
           <input
             className="message-send-button"
             type="submit"
-            value="Send" />
+            value="Send Message" />
         </form>
 
       </div>
