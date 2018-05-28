@@ -34,14 +34,6 @@ class App extends Component {
         this.setState( {activeRoom: null } );
       }
     });
-    // this.roomsRef.on('value', snapshot => {
-    //   const room = snapshot.val();
-    //   room.key = snapshot.key;
-    //   const roomName = room.name;
-    //   if (this.state.activeRoom.key === room.key ) {
-    //     this.setState( { activeRoom.name: room.name });
-    //   }
-    // });
   }
 
   handleRoomChange = (event, room) => {
