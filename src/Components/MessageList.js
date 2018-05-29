@@ -8,12 +8,12 @@ class MessageList extends Component {
       messages: [],
       newMessage: '',
       editMessage: false,
-      editMessageKey: ''
+      editMessageKey: '',
+      editedMessageText: ''
     }
     this.messageList = this.props.firebase.database().ref('messages');
     this.roomsRef = this.props.firebase.database().ref('rooms');
   }
-
 
   componentDidMount() {
     this.messageList.on('child_added', snapshot => {
@@ -59,19 +59,20 @@ class MessageList extends Component {
 
   handleSubmitUpdatedMessage = (e) => {
     if (e.key === "Enter") {
-      if (this.state.newMessage === '') {
+      if (this.state.editedMessageText === '') {
         this.setState( {editRoom: false});
       } else {
       const updatedMessageList = [...this.state.messages];
       const indexOfEdit = updatedMessageList.findIndex(
         message => message.key === this.state.editMessageKey);
-      updatedMessageList[indexOfEdit].content = this.state.newMessage;
+      updatedMessageList[indexOfEdit].content = this.state.editedMessageText;
 
       const editedMessage = this.messageList.child(this.state.editMessageKey);
-      editedMessage.update({content: this.state.newMessage});
+      editedMessage.update({content: this.state.editedMessageText,
+                            sentAt: this.props.firebase.database.ServerValue.TIMESTAMP});
       this.setState(
           { messages: updatedMessageList,
-            newMessage: '',
+            editedMessageText: '',
             editMessage: false,
             editMessageKey: '' }
       );
@@ -80,13 +81,15 @@ class MessageList extends Component {
 
 
   handleUpdateMessage = (e) => {
-    this.setState( {newMessage: e.target.value});
+    this.setState( {editedMessageText: e.target.value});
   }
 
   convertTime = (timestamp) => {
     const thisDate = new Date(timestamp);
     return thisDate.toLocaleString();
   }
+
+
 
   render() {
 
@@ -98,7 +101,7 @@ class MessageList extends Component {
         placeholder={this.state.selectedMessage}
         className="edit-message-input"
         type="text"
-        value={this.state.newMessage}
+        value={this.state.editedMessageText}
         onChange={this.handleUpdateMessage}
         onKeyPress={this.handleSubmitUpdatedMessage}/>
     );

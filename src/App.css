@@ -34,6 +34,7 @@ input {
 .messagelist {
   border: .1rem solid black;
   grid-area: messagelist;
+  padding-bottom: 3rem;
 }
 
 .roomlist {
@@ -42,6 +43,7 @@ input {
   flex-direction: column;
   grid-area: roomlist;
   justify-content: flex-start;
+  padding-bottom: 3rem;
 }
 
 .user {

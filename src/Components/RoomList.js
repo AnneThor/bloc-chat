@@ -35,6 +35,16 @@ class RoomList extends Component {
     var index = roomArrayCopy.indexOf(room);
     roomArrayCopy.splice(index, 1);
     this.setState( { rooms: roomArrayCopy });
+    const messageRef = this.props.firebase.database().ref('messages');
+    messageRef.on('value', snapshot => {
+      snapshot.forEach( snapshot => {
+        var obj = snapshot.val();
+        obj.key = snapshot.key;
+        if (obj.roomId === room.key) {
+          messageRef.child(obj.key).remove();
+        }
+      })
+    });
   }
 
   handleEditRoom = (e, room) => {

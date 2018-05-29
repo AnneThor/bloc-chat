@@ -24,16 +24,30 @@ class App extends Component {
       activeUser: null
     };
     this.roomsRef = firebase.database().ref('rooms');
+    this.messageList = firebase.database().ref('messages');
   }
 
-  componentDidMount() {
+  componentWillUpdate() {
+    this.roomsRef.on('value', snapshot => {
+      if (this.state.activeRoom) {
+        const room = snapshot.val();
+        room.key = snapshot.key;
+        if (room.key === this.state.activeRoom.key) {
+          const updatedRoomName = this.state.activeRoom;
+          updatedRoomName.name = room.name;
+          this.setState( { activeRoom: updatedRoomName } );
+        }
+      }
+    });
+
     this.roomsRef.on('child_removed', snapshot => {
       const room = snapshot.val();
       room.key = snapshot.key;
       if (this.state.activeRoom !== null && room.key === this.state.activeRoom.key) {
-        this.setState( {activeRoom: null } );
-      }
-    });
+        this.setState( {activeRoom: null } )
+      };
+    })
+
   }
 
   handleRoomChange = (event, room) => {

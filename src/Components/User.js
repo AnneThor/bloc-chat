@@ -3,7 +3,6 @@ import './User.css';
 
 class User extends Component {
 
-
   handleSignIn(firebase) {
     const provider = new this.props.firebase.auth.GoogleAuthProvider();
     this.props.firebase.auth().signInWithPopup( provider );
