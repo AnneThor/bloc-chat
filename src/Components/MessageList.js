@@ -9,10 +9,12 @@ class MessageList extends Component {
       newMessage: '',
       editMessage: false,
       editMessageKey: '',
-      editedMessageText: ''
+      editedMessageText: '',
+      activeRoomName: this.props.activeRoom ? this.props.activeRoom.name : null
     }
     this.messageList = this.props.firebase.database().ref('messages');
     this.roomsRef = this.props.firebase.database().ref('rooms');
+    this.roomsRef.on("value", this.getRoomName, this.errRoomName);
   }
 
   componentDidMount() {
@@ -22,6 +24,7 @@ class MessageList extends Component {
       this.setState( {messages: this.state.messages.concat( message )} );
     });
   }
+
 
   handleDeleteMessage(e, message) {
       this.messageList.child(e.target.value).remove();
@@ -38,14 +41,14 @@ class MessageList extends Component {
     );
   }
 
-  handleNewMessage= (event) => {
+  handleNewMessage= (e) => {
     this.setState(
-      { newMessage: event.target.value }
+      { newMessage: e.target.value }
     );
   }
 
-  handleSendMessage = (event) => {
-    event.preventDefault();
+  handleSendMessage = (e) => {
+    e.preventDefault();
       this.messageList.push(
         { content: this.state.newMessage,
           roomId: this.props.activeRoom.key,
@@ -89,7 +92,18 @@ class MessageList extends Component {
     return thisDate.toLocaleString();
   }
 
+    getRoomName = (data) => {
+      var rooms = data.val();
+      var roomArray = Object.keys(rooms);
+      var index = roomArray.indexOf(this.props.activeRoom.key);
+      var updatedName = rooms[(roomArray[index])].name;
+      this.setState( {activeRoomName: updatedName} );
+    }
 
+    errRoomName = (err) => {
+      console.log("Error!");
+      console.log(err);
+    }
 
   render() {
 
@@ -105,7 +119,6 @@ class MessageList extends Component {
         onChange={this.handleUpdateMessage}
         onKeyPress={this.handleSubmitUpdatedMessage}/>
     );
-
 
     return(
       <div className="messagelist">
@@ -144,7 +157,7 @@ class MessageList extends Component {
             type="text"
             value={this.state.newMessage}
             placeholder="Write your message here"
-            onChange= {this.handleNewMessage} />
+            onChange= {this.handleNewMessage}/>
           <input
             className="message-send-button"
             type="submit"

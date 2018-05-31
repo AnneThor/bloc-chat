@@ -12,6 +12,8 @@ class RoomList extends Component {
       updatedRoomName: ''
     }
     this.roomsRef = this.props.firebase.database().ref('rooms');
+    // this.roomsRef.on("value", this.getRoomName, this.errRoomName);
+    this.messageRef = this.props.firebase.database().ref('messages');
   }
 
   componentDidMount() {
@@ -22,7 +24,6 @@ class RoomList extends Component {
     });
   }
 
-
   handleAddNewRoom = (event) => {
     event.preventDefault();
     this.roomsRef.push( {name: this.state.newRoom } );
@@ -30,21 +31,20 @@ class RoomList extends Component {
   }
 
   handleDeleteRoom = (e, room) => {
+    this.messageRef.on('value', snapshot => {
+      snapshot.forEach( snapshot => {
+        var obj = snapshot.val();
+        obj.key = snapshot.key;
+        if (obj.roomId === room.key) {
+          this.messageRef.child(obj.key).remove();
+        }
+      })
+    });
     this.roomsRef.child(e.target.value).remove();
     var roomArrayCopy = [...this.state.rooms];
     var index = roomArrayCopy.indexOf(room);
     roomArrayCopy.splice(index, 1);
     this.setState( { rooms: roomArrayCopy });
-    const messageRef = this.props.firebase.database().ref('messages');
-    messageRef.on('value', snapshot => {
-      snapshot.forEach( snapshot => {
-        var obj = snapshot.val();
-        obj.key = snapshot.key;
-        if (obj.roomId === room.key) {
-          messageRef.child(obj.key).remove();
-        }
-      })
-    });
   }
 
   handleEditRoom = (e, room) => {
@@ -54,13 +54,10 @@ class RoomList extends Component {
                    );
   }
 
-  handleUpdateRoom = (e) => {
+  handleSubmitNewRoomTitle = (e) => {
     this.setState(
         { updatedRoomName: e.target.value }
       );
-    }
-
-  handleSubmitNewRoomTitle = (e) => {
     if (e.key === "Enter") {
       if (this.state.updatedRoomName === '') {
         this.setState( {editRoom: false});
@@ -84,6 +81,25 @@ class RoomList extends Component {
     );
   }
 
+  // getRoomName = (data) => {
+  //   if (this.props.activeRoom === null) {
+  //     return;
+  //   }
+  //   var rooms = data.val();
+  //   var roomArray = Object.keys(rooms);
+  //   var index = roomArray.indexOf(this.props.activeRoom.key);
+  //   var updatedName = rooms[(roomArray[index])].name;
+  //   var updatedNameKey = rooms[(roomArray[index])].key;
+  //   if (this.props.activeRoom.key === updatedNameKey && this.props.activeRoom.name !== updatedName) {
+  //     this.props.activeRoom.name = updatedName;
+  //   }
+  // }
+  //
+  // errRoomName = (err) => {
+  //   console.log("Error!");
+  //   console.log(err);
+  // }
+
 
   render () {
 
@@ -91,9 +107,8 @@ class RoomList extends Component {
       <input autoFocus
         className="edit-roomname"
         type="text"
-        onChange={this.handleUpdateRoom}
-        onKeyPress={this.handleSubmitNewRoomTitle}/>
-    );
+        onKeyUp={this.handleSubmitNewRoomTitle}/>
+      );
 
     return (
       <div className="roomlist">
@@ -101,9 +116,8 @@ class RoomList extends Component {
         <ul className="available-rooms">
           { this.state.rooms.map(
             (room, index) =>
-            <li
-              className="available-room-item"
-              key={index}>
+            <li className="available-room-item"
+                key={index}>
               <section
                 className="available-room-name"
                 key={index}

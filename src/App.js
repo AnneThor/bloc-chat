@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import './App.css';
-import RoomList from './Components/RoomList';
+import RoomList from './Components/RoomList/RoomList';
 import MessageList from './Components/MessageList';
 import User from './Components/User';
 
@@ -21,15 +21,15 @@ class App extends Component {
     super(props);
     this.state = {
       activeRoom: null,
-      activeUser: null
+      activeUser: null,
     };
     this.roomsRef = firebase.database().ref('rooms');
-    this.messageList = firebase.database().ref('messages');
+    this.messageRef = firebase.database().ref('messages');
   }
 
   componentWillUpdate() {
     this.roomsRef.on('value', snapshot => {
-      if (this.state.activeRoom) {
+      if ( this.state.activeRoom && snapshot.val() ) {
         const room = snapshot.val();
         room.key = snapshot.key;
         if (room.key === this.state.activeRoom.key) {
@@ -51,15 +51,15 @@ class App extends Component {
   }
 
   handleRoomChange = (event, room) => {
-    this.setState( {
-      activeRoom: room
-    });
+    this.setState(
+      { activeRoom: room }
+    );
   }
 
   handleDeleteRoom = (event) => {
-    this.setState({
-      activeRoom: null
-    });
+    this.setState(
+      { activeRoom: null }
+    );
   }
 
   setUser = (user) => {
@@ -68,10 +68,8 @@ class App extends Component {
     );
   }
 
-
   render() {
     const activeRoom = this.state.activeRoom;
-
 
     return (
       <div className="grid-layout">
